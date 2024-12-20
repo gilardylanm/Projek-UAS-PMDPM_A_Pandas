@@ -16,7 +16,7 @@ def classify_image(image_path):
         result = tf.nn.softmax(predictions[0])
         return result.numpy()
     except Exception as e:
-        return "Error", str(e)
+        return np.array([])  # Return empty array in case of error
 
 def custom_progress_bar(confidence_scores, class_names, colors):
     for i, score in enumerate(confidence_scores):
@@ -42,7 +42,7 @@ if st.sidebar.button("Prediksi"):
             with open(uploaded_file.name, "wb") as f:
                 f.write(uploaded_file.getbuffer())
             confidence_scores = classify_image(uploaded_file.name)
-            if confidence_scores != "Error":
+            if confidence_scores.size > 0:  # Check if the array is not empty
                 class_idx = np.argmax(confidence_scores)
                 predicted_label = class_names[class_idx]
                 colors = ["#007BFF", "#FFAA00", "#28A745"]
@@ -55,7 +55,7 @@ if st.sidebar.button("Prediksi"):
                 st.sidebar.write(f"**Total Confidence:** {sum(confidence_scores) * 100:.2f}%")
                 st.sidebar.write("---")
             else:
-                st.sidebar.error(f"Kesalahan saat memproses gambar {uploaded_file.name}: {confidence_scores[1]}")
+                st.sidebar.error(f"Kesalahan saat memproses gambar {uploaded_file.name}.")
     else:
         st.sidebar.error("Silakan unggah setidaknya satu gambar untuk diprediksi.")
 
