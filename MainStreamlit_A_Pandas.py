@@ -42,7 +42,8 @@ if st.sidebar.button("Prediksi"):
             with open(uploaded_file.name, "wb") as f:
                 f.write(uploaded_file.getbuffer())
             confidence_scores = classify_image(uploaded_file.name)
-            if confidence_scores.size > 0:  # Check if the array is not empty
+            
+            if confidence_scores is not None and confidence_scores.size > 0:  # Check if the array is not empty
                 class_idx = np.argmax(confidence_scores)
                 predicted_label = class_names[class_idx]
                 colors = ["#007BFF", "#FFAA00", "#28A745"]
